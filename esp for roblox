@@ -1,0 +1,64 @@
+local players = game.Players
+
+local function createPlayerUI(player)
+    local character = player.Character
+    if character then
+        -- Erstelle eine BillboardGui für den Spieler
+        local billboard = Instance.new("BillboardGui")
+        billboard.Adornee = character.HumanoidRootPart
+        billboard.Size = UDim2.new(3, 0, 3, 0)
+        billboard.Parent = character
+
+        -- Erstelle einen Rahmen für die HealthBar
+        local healthBar = Instance.new("Frame")
+        healthBar.Name = "HealthBar" -- Gib dem Frame einen Namen für spätere Referenz
+        healthBar.Size = UDim2.new(2.5, 0, 2.5, 0)
+        healthBar.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+        healthBar.BorderSizePixel = 0
+        healthBar.Parent = billboard
+
+        -- Erstelle einen äußeren Rahmen für den Tracker
+        local trackerFrame = Instance.new("Frame")
+        trackerFrame.Name = "TrackerFrame" -- Gib dem Frame einen Namen für spätere Referenz
+        trackerFrame.Size = UDim2.new(3, 0, 3, 0)
+        trackerFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+        trackerFrame.BorderSizePixel = 0
+        trackerFrame.Parent = billboard
+
+        -- Erstelle eine einfache Linie
+        local line = Instance.new("Part")
+        line.Name = "TrackerLine" -- Gib dem Part einen Namen für spätere Referenz
+        line.Anchored = true
+        line.CanCollide = false
+        line.Transparency = 0.5
+        line.Parent = workspace
+
+        -- Funktion zum Aktualisieren der Linie
+        local function updateLine()
+            line.CFrame = CFrame.new(Vector3.new(0, 10, 0), character.HumanoidRootPart.Position)
+            line.Size = Vector3.new(0.1, 0.1, line.CFrame:ToObjectSpace(character.HumanoidRootPart.Position).Z)
+        end
+
+        -- Aktualisiere die Linie regelmäßig
+        game:GetService("RunService").Heartbeat:Connect(updateLine)
+
+        -- Erstelle ein Menü (einfaches Beispiel mit einem Dropdown)
+        local dropdown = Instance.new("Dropdown")
+        dropdown.Position = UDim2.new(0, 0, 1, -20) -- Positioniere das Dropdown unter dem Tracker
+        dropdown.Parent = trackerFrame
+        dropdown.Items = {"Rot", "Grün", "Blau"} -- Füge hier weitere Farben hinzu
+
+        -- Funktion zum Ändern der Farbe
+        dropdown.Changed:Connect(function(newValue)
+            if newValue == "Rot" then
+                trackerFrame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+            elseif newValue == "Grün" then
+                trackerFrame.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+            elseif newValue == "Blau" then
+                trackerFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
+            end
+        end)
+    end
+end
+
+-- ... (Rest des Skripts bleibt gleich)
